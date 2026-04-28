@@ -1,0 +1,22 @@
+# Test runner for issue #943 (TCP_USER_TIMEOUT enforcement).
+# Used to validate the fix on Linux from a macOS dev machine.
+FROM ruby:3.3-slim
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    git \
+    libpq-dev \
+    default-libmysqlclient-dev \
+    libsqlite3-dev \
+    libyaml-dev \
+    pkg-config \
+  && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+ENV BUNDLE_PATH=/bundle BUNDLE_DISABLE_SHARED_GEMS=true
+ENV TARGET_DB=sqlite
+
+# We mount the project at /app at run time. Bundle install is done in the
+# entrypoint so the lockfile reflects whatever the host has.
+CMD ["bash"]
